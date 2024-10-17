@@ -20,8 +20,8 @@ public partial class Solution
 {
     public ListNode MergeTwoLists(ListNode list1, ListNode list2)
     {
-        ListNode head = new ListNode(0);
-        ListNode curr = head;
+        ListNode head = new ListNode(0); // dummy node
+        ListNode curr = head; // pointers to traverse the lists
 
         while (list1 != null && list2 != null)
         {
