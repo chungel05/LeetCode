@@ -94,7 +94,6 @@ public partial class Solution
     {
         int[] parent = new int[isConnected.Length];
         int[] rank = new int[isConnected.Length];
-        HashSet<int[]> edges = new HashSet<int[]>();
 
         for (int i = 0; i < isConnected.Length; i++)
         {
@@ -102,22 +101,17 @@ public partial class Solution
             rank[i] = 1;
         }
 
+        int res = isConnected.Length;
         for (int i = 0; i < isConnected.Length; i++)
         {
             for (int j = i + 1; j < isConnected.Length; j++)
             {
                 if (isConnected[i][j] == 1)
                 {
-                    edges.Add(new int[] { i, j });
+                    if (UnionCircleNum(i, j, parent, rank))
+                        res--;
                 }
             }
-        }
-
-        int res = isConnected.Length;
-        foreach (int[] edge in edges)
-        {
-            if (UnionCircleNum(edge[0], edge[1], parent, rank))
-                res--;
         }
         return res;
     }
