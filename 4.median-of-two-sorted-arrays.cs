@@ -48,6 +48,11 @@
  * 
  * 
  */
+/*
+ * Merge sort implementation
+ * Merge two sorted array together and return the median
+ * Time: O(n+m), Space: O(n+m)
+ */
 
 // @lc code=start
 using System.Data;
@@ -56,44 +61,33 @@ public partial class Solution
 {
     public double FindMedianSortedArrays(int[] nums1, int[] nums2)
     {
-        int[] A, B;
-        int Total = nums1.Length + nums2.Length;
-        int half = (Total + 1) / 2;
-        if (nums1.Length <= nums2.Length)
-        {
-            A = nums1;
-            B = nums2;
-        }
-        else
-        {
-            A = nums2;
-            B = nums1;
-        }
+        List<int> res = new List<int>();
+        int total = nums1.Length + nums2.Length;
+        int i = 0, j = 0;
 
-        int l = 0, r = A.Length;
-        while (l <= r)
+        while (i < nums1.Length && j < nums2.Length)
         {
-            int i = (l + r) / 2;
-            int j = half - i;
-
-            int Aleft = i - 1 >= 0 ? A[i - 1] : int.MinValue;
-            int Aright = i < A.Length ? A[i] : int.MaxValue;
-            int Bleft = j - 1 >= 0 ? B[j - 1] : int.MinValue;
-            int Bright = j < B.Length ? B[j] : int.MaxValue;
-
-            if (Aleft <= Bright && Bleft <= Aright)
+            if (nums1[i] <= nums2[j])
             {
-                if (Total % 2 != 0)
-                    return Math.Max(Aleft, Bleft);
-                else
-                    return (Math.Max(Aleft, Bleft) + Math.Min(Aright, Bright)) / 2.0;
+                res.Add(nums1[i]);
+                i++;
             }
-            else if (Aleft > Bright)
-                r = i - 1;
             else
-                l = i + 1;
+            {
+                res.Add(nums2[j]);
+                j++;
+            }
         }
-        return -1;
+
+        if (i >= nums1.Length)
+            res.AddRange(nums2.Skip(j));
+        else
+            res.AddRange(nums1.Skip(i));
+
+        if (total % 2 == 0)
+            return (double)(res[total / 2 - 1] + res[total / 2]) / 2;
+        else
+            return res[total / 2];
     }
 }
 // @lc code=end
