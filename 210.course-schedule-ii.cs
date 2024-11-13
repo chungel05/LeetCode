@@ -72,6 +72,8 @@
 /*
 * BFS implementation
 * Traversal all nodes in each level and push adj nodes to queue if their prerequisites are completed
+* Kahn's Algorithm
+* count = in_degree
 */
 
 // @lc code=start
