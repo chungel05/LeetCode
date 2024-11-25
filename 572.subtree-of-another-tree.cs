@@ -66,27 +66,26 @@ public partial class Solution
 {
     public bool DepthSubTree(TreeNode node, TreeNode subRoot)
     {
-        if (node != null && subRoot != null)
-        {
-            bool left = DepthSubTree(node.left, subRoot.left);
-            bool right = DepthSubTree(node.right, subRoot.right);
-            return left && right && node.val == subRoot.val;
-        }
-        else if (node == null && subRoot == null)
+        if (node == null && subRoot == null)
             return true;
-        else
+
+        // either one is null or node.val != subRoot.val, return false
+        if (node == null || subRoot == null || node.val != subRoot.val)
             return false;
+
+        // check left side and right side are the same 
+        return DepthSubTree(node.left, subRoot.left) && DepthSubTree(node.right, subRoot.right);
     }
 
     public bool IsSubtree(TreeNode root, TreeNode subRoot)
     {
+        // base case, if root == null, no need to check
         if (root == null)
             return false;
 
-        if (DepthSubTree(root, subRoot))
-            return true;
-        else
-            return IsSubtree(root.left, subRoot) || IsSubtree(root.right, subRoot);
+        // check current root is sub tree or not
+        // otherwise, check root.left and root.right
+        return DepthSubTree(root, subRoot) || IsSubtree(root.left, subRoot) || IsSubtree(root.right, subRoot);
     }
 }
 // @lc code=end
