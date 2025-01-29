@@ -60,60 +60,49 @@
  * for each edge, connect the node to the parent
  * if the node is already connected, then return 0
  * and return the redundant edge
+ * Time: O(V + E * a(V)), Space: O(V)
  */
 
 // @lc code=start
 public partial class Solution
 {
     private int[] parent;
-    private int[] rank;
 
-    private int UnionFindRedundantConnection(int n)
+    // Find function
+    private int Find(int n)
     {
-        int res = n;
-
-        while (parent[res] != res)
-        {
-            parent[res] = parent[parent[res]];
-            res = parent[res];
-        }
-        return res;
+        if (parent[n] != n)
+            parent[n] = Find(parent[n]);
+        return parent[n];
     }
 
-    private int UnionRedundantConnection(int n1, int n2)
+    // Union Function
+    private bool Union(int n1, int n2)
     {
-        int p1 = UnionFindRedundantConnection(n1);
-        int p2 = UnionFindRedundantConnection(n2);
+        int p1 = Find(n1);
+        int p2 = Find(n2);
         if (p1 == p2)
-            return 0;
+            return false;
 
-        if (rank[p2] > rank[p1])
-        {
-            parent[p1] = p2;
-            rank[p2] += rank[p1];
-        }
-        else
-        {
-            parent[p2] = p1;
-            rank[p1] += rank[p2];
-        }
-        return 1;
+        parent[p2] = p1;
+        return true;
     }
 
     public int[] FindRedundantConnection(int[][] edges)
     {
         parent = new int[edges.Length + 1];
-        rank = new int[edges.Length + 1];
 
+        // Initialized parent for each node, which is start from [1, n]
         for (int i = 1; i < edges.Length + 1; i++)
         {
             parent[i] = i;
-            rank[i] = 1;
         }
 
+        // foreach edge, try to union, if successful, then it is necessary edge
+        // if not successful, then it is redundant edge, can remove it
         foreach (int[] edge in edges)
         {
-            if (UnionRedundantConnection(edge[0], edge[1]) == 0)
+            if (!Union(edge[0], edge[1]))
                 return edge;
         }
         return new int[] { };
