@@ -82,53 +82,29 @@
  */
 /*
  * Stack Approach
- * Time: O(m log log m + n (log n + log m)), Space: O(n)
+ * Time: O(m log m + n log n), Space: O(n)
  */
 
 // @lc code=start
 public partial class Solution
 {
     private int MOD = 1_000_000_007;
-    private List<int> primes;
 
-    // get all primes using Sieve of Eratosthenes
-    // Time: O(m log log m)
-    private void GetPrimeForMaximumScore(int max)
+    // get all prime score using Sieve of Eratosthenes
+    // Time: O(m log m)
+    private int[] GetPrimeScoreForMaximumScore(int max)
     {
-        primes = new List<int>();
-        bool[] isPrime = new bool[max + 1];
-        Array.Fill(isPrime, true);
-        isPrime[0] = isPrime[1] = false;
+        int[] primeScore = new int[max + 1];
 
-        for (int i = 2; i * i <= max; i++)
+        for (int i = 2; i <= max; i++)
         {
-            if (isPrime[i])
-            {
-                primes.Add(i);
-                for (long j = (long)i * i; j <= max; j += i)
-                    isPrime[(int)j] = false;
-            }
-        }
-    }
-
-    // calc the prime score
-    private int GetPrimeScoreForMaximumScore(int n)
-    {
-        int score = 0;
-        foreach (int prime in primes)
-        {
-            if (prime * prime > n)
-                break;
-
-            if (n % prime != 0)
+            if (primeScore[i] != 0)
                 continue;
 
-            score++;
-            while (n % prime == 0)
-                n /= prime;
+            for (int j = i; j <= max; j += i)
+                primeScore[j]++;
         }
-        score += n > 1 ? 1 : 0;
-        return score;
+        return primeScore;
     }
 
     private long pow(long x, long n)
@@ -149,17 +125,11 @@ public partial class Solution
     public int MaximumScore(IList<int> nums, int k)
     {
         int n = nums.Count;
-        int max = Int32.MinValue;
-        int[] numsArray = new int[n];
+        int max = nums.Max();
+        int[] numsArray = nums.ToArray();
 
-        // find the max value in nums and copy nums to numsArray
-        for (int i = 0; i < n; i++)
-        {
-            numsArray[i] = nums[i];
-            max = Math.Max(max, nums[i]);
-        }
-        // get all prime num
-        GetPrimeForMaximumScore(max);
+        // get all prime score
+        int[] primeScore = GetPrimeScoreForMaximumScore(max);
 
         // find the left dominant and right dominant
         int[] nextDominant = new int[n];
@@ -171,7 +141,7 @@ public partial class Solution
 
         for (int i = 0; i < n; i++)
         {
-            int score = GetPrimeScoreForMaximumScore(nums[i]);
+            int score = primeScore[nums[i]];
             while (stack.Count > 0 && stack.Peek().s < score)
             {
                 int topIndex = stack.Pop().idx;
