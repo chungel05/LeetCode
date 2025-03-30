@@ -50,6 +50,10 @@
  * 
  * 
  */
+/*
+ * Greedy Approach
+ * Time: O(n), Space: O(26)
+ */
 
 // @lc code=start
 public partial class Solution
@@ -57,10 +61,10 @@ public partial class Solution
     public IList<int> PartitionLabels(string s)
     {
         // Record last position of each char
-        Dictionary<char, int> count = new Dictionary<char, int>();
+        int[] end = new int[26];
         for (int i = 0; i < s.Length; i++)
         {
-            count[s[i]] = i;
+            end[s[i] - 'a'] = i;
         }
 
         int last = 0;
@@ -69,7 +73,7 @@ public partial class Solution
         for (int i = 0; i < s.Length; i++)
         {
             // looping char and get the largest index
-            last = Math.Max(count[s[i]], last);
+            last = Math.Max(end[s[i] - 'a'], last);
 
             // if we stand at last index, add to result
             if (last == i)
