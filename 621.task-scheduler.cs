@@ -83,7 +83,7 @@ using System.Diagnostics;
 
 public partial class Solution
 {
-    public int LeastInterval(char[] tasks, int n)
+    /* public int LeastInterval(char[] tasks, int n)
     {
         Dictionary<char, int> occurrence = new Dictionary<char, int>();
         PriorityQueue<int, int> maxHeap = new PriorityQueue<int, int>();
@@ -117,6 +117,27 @@ public partial class Solution
             time++;
         }
         return time;
+    } */
+
+    // Greedy Approach
+    public int LeastInterval(char[] tasks, int n)
+    {
+        int[] freq = new int[26];
+        int max = 0;
+        int maxCount = 0;
+        for (int i = 0; i < tasks.Length; i++)
+        {
+            freq[tasks[i] - 'A']++;
+            max = Math.Max(freq[tasks[i] - 'A'], max);
+        }
+
+        for (int i = 0; i < 26; i++)
+        {
+            if (freq[i] == max)
+                maxCount++;
+        }
+
+        return Math.Max(tasks.Length, (max - 1) * (n + 1) + maxCount);
     }
 }
 // @lc code=end
