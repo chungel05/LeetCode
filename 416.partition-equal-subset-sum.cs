@@ -44,34 +44,115 @@
  * 
  */
 /*
+ * DP Approach
+ * Time: O(n * sum), Space: O(n * sum)
  * Start from right hand side, create all the possible sum that can sum to target (total sum / 2)
  */
 
 // @lc code=start
 public partial class Solution
 {
-    public bool CanPartition(int[] nums)
+    // Top-down Approach
+    /* private bool DFSCanPartition(int[] nums, int i, int sum, int[][] dp)
     {
-        if (nums.Sum() % 2 != 0)
+        if (sum == 0)
+            return true;
+
+        if (i >= nums.Length || i < 0 || sum < 0)
             return false;
 
-        HashSet<int> dp = new HashSet<int>();
-        dp.Add(0);
-        int t = nums.Sum() / 2;
+        if (dp[i][sum] != -1)
+            return dp[i][sum] == 1 ? true : false;
 
+        if (DFSCanPartition(nums, i + 1, sum - nums[i], dp) || DFSCanPartition(nums, i + 1, sum, dp))
+        {
+            dp[i][sum] = 1;
+            return true;
+        }
+        else
+        {
+            dp[i][sum] = 0;
+            return false;
+        }
+    }
+
+    public bool CanPartition(int[] nums)
+    {
+        int sum = 0;
+        for (int i = 0; i < nums.Length; i++)
+            sum += nums[i];
+
+        if (sum % 2 != 0)
+            return false;
+
+        sum = sum / 2;
+        int[][] dp = new int[nums.Length][];
+        for (int i = 0; i < nums.Length; i++)
+        {
+            dp[i] = new int[sum + 1];
+            Array.Fill(dp[i], -1);
+        }
+        return DFSCanPartition(nums, 0, sum, dp);
+    } */
+
+    // Bottom-up Approach
+    /* public bool CanPartition(int[] nums)
+    {
+        int sum = 0;
+        for (int i = 0; i < nums.Length; i++)
+            sum += nums[i];
+
+        // if sum is not divisible by 2 => cannot partition into 2 parts
+        if (sum % 2 != 0)
+            return false;
+
+        sum = sum / 2;
+        bool[][] dp = new bool[nums.Length + 1][];
+        for (int i = 0; i <= nums.Length; i++)
+            dp[i] = new bool[sum + 1];
+
+        // Bottom-up
         for (int i = nums.Length - 1; i >= 0; i--)
         {
-            HashSet<int> next = new HashSet<int>();
-            foreach (int j in dp)
+            for (int j = sum; j >= 0; j--)
             {
-                if (j + nums[i] == t)
-                    return true;
-                next.Add(j + nums[i]);
-                next.Add(j);
+                // if sum == num[i], then it is possible to get sum
+                if (j - nums[i] == 0)
+                    dp[i][j] = true;
+                // if nums[i] > j, inherit from dp[i + 1][sum]
+                else if (j - nums[i] < 0)
+                    dp[i][j] = dp[i + 1][j];
+                // else, check dp[i + 1][sum - num] || dp[i + 1][sum]
+                else
+                    dp[i][j] = dp[i + 1][j - nums[i]] || dp[i + 1][j];
             }
-            dp = next;
         }
-        return false;
+        return dp[0][sum];
+    } */
+
+    // Space Optimized Bottom-up Approach
+    public bool CanPartition(int[] nums)
+    {
+        int sum = 0;
+        for (int i = 0; i < nums.Length; i++)
+            sum += nums[i];
+
+        // if sum is not divisible by 2 => cannot partition into 2 parts
+        if (sum % 2 != 0)
+            return false;
+
+        sum = sum / 2;
+        bool[] dp = new bool[sum + 1];
+        for (int i = 0; i < nums.Length; i++)
+        {
+            for (int j = sum; j >= nums[i]; j--)
+            {
+                dp[j] = dp[j - nums[i]] || dp[j];
+                if (j == nums[i])
+                    dp[j] = true;
+            }
+        }
+        return dp[sum];
     }
 }
 // @lc code=end
