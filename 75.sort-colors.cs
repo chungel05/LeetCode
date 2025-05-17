@@ -51,11 +51,37 @@
  * extra space?
  * 
  */
+/*
+ * Two Pointer Approach
+ * Time: O(n), Space: O(1)
+ */
 
 // @lc code=start
 public partial class Solution
 {
     public void SortColors(int[] nums)
+    {
+        int left = 0, right = nums.Length - 1;
+        for (int i = 0; i <= right; i++)
+        {
+            // swap 0 to the left hand side
+            if (nums[i] == 0)
+            {
+                nums[i] = nums[left];
+                nums[left++] = 0;
+            }
+            // swap 2 to the right hand side
+            else if (nums[i] == 2)
+            {
+                nums[i] = nums[right];
+                nums[right--] = 2;
+                // handle again for the current position i
+                i--;
+            }
+        }
+    }
+
+    /* public void SortColors(int[] nums)
     {
         for (int i = 0; i < nums.Length; i++)
         {
@@ -68,7 +94,7 @@ public partial class Solution
             }
             nums[j + 1] = key;
         }
-    }
+    } */
 }
 // @lc code=end
 
