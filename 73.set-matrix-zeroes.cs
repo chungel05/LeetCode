@@ -54,11 +54,53 @@
  * 
  * 
  */
+/*
+ * Array Space Optimal Approach
+ * Time: O(mn), Space: O(1)
+ */
 
 // @lc code=start
 public partial class Solution
 {
     public void SetZeroes(int[][] matrix)
+    {
+        // since matrix[0][0] will affected by other cells in col j = 0
+        // first row will be affected incorrectly
+        // so, instead of changing matrix[0][0], use boolean to record
+        bool col0 = false;
+        for (int i = 0; i < matrix.Length; i++)
+        {
+            if (matrix[i][0] == 0)
+                col0 = true;
+
+            for (int j = 1; j < matrix[0].Length; j++)
+            {
+                // mark 0 in first row and first col
+                if (matrix[i][j] == 0)
+                {
+                    matrix[i][0] = 0;
+                    matrix[0][j] = 0;
+                }
+            }
+        }
+
+        // from [m - 1, n - 1] to [0, 0]
+        // to prevent changing of indicator: first row and first col
+        for (int i = matrix.Length - 1; i >= 0; i--)
+        {
+            for (int j = matrix[0].Length - 1; j >= 1; j--)
+            {
+                if (matrix[i][0] == 0 || matrix[0][j] == 0)
+                    matrix[i][j] = 0;
+            }
+            if (col0)
+                matrix[i][0] = 0;
+        }
+    }
+
+    // Hash Approach
+    // Time: O(mn), Space: O(m + n)
+    /* public void SetZeroes(int[][] matrix)
     {
         HashSet<int> row = new HashSet<int>();
         HashSet<int> col = new HashSet<int>();
@@ -87,7 +129,7 @@ public partial class Solution
             }
         }
 
-    }
+    } */
 }
 // @lc code=end
 
